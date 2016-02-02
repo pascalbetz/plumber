@@ -1,19 +1,20 @@
 module Plumber
   module Pipe
+
     module InstanceMethods
       DEFAULT_PIPE_NUMBER_SUCCESS = 0
       DEFAULT_PIPE_NUMBER_FAILURE = 1
 
       def initialize
-        @pipes = []
+        @output_pipes = []
       end
 
-      def connect(pipe, output_number = pipes.size)
-        pipes[output_number] = pipe
+      def connect(pipe, output_number = output_pipes.size)
+        output_pipes[output_number] = pipe
       end
 
       private
-      attr_reader :pipes
+      attr_reader :output_pipes
 
       def flush_success(value)
         flush(value, DEFAULT_PIPE_NUMBER_SUCCESS)
@@ -24,7 +25,7 @@ module Plumber
       end
 
       def flush(value, output_number = DEFAULT_PIPE_NUMBER_SUCCESS)
-        pipe = pipes[output_number] || Plug::INSTANCE # TODO: nice...but probably better to raise an info
+        pipe = output_pipes[output_number] || Plumber::Blocks::Plug.new # TODO: nice...but probably better to raise an info
         pipe.call(value)
       end
     end
